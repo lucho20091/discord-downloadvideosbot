@@ -30,37 +30,27 @@ client.on("messageCreate", async (message) => {
 
   const id = crypto.randomBytes(4).toString("hex");
   const outputTemplate = path.join(__dirname, `video_${id}.%(ext)s`);
-
-  // yt-dlp command works for YT, IG, TikTok
-  const cmd = `yt-dlp -f "bv*[height<=${quality}]+ba/b[height<=${quality}]" --merge-output-format webm -o "${outputTemplate}" "${link}"`;
-
+  const cmd = `yt-dlp -f "bv*[height<=${quality}]+ba/b[height<=${quality}]" --merge-output-format mp4 -o "${outputTemplate}" "${link}"`;
   exec(cmd, async (err, stdout, stderr) => {
     if (err) {
       console.log(stderr);
       return;
     }
-
     const files = fs
       .readdirSync(__dirname)
       .filter((f) => f.startsWith(`video_${id}`));
-
     if (!files.length) return;
-
     const filePath = path.join(__dirname, files[0]);
-
     try {
       const stats = fs.statSync(filePath);
       const sizeMB = stats.size / (1024 * 1024);
-
       if (sizeMB > 10) {
         fs.unlinkSync(filePath);
         return;
       }
-
       await message.channel.send({
         files: [filePath],
       });
-
       fs.unlinkSync(filePath);
     } catch (e) {
       console.error(e);
