@@ -18,16 +18,16 @@ client.once("clientReady", () => {
 });
 // bot listens on messages
 client.on("messageCreate", async (message) => {
-  // if the author of the message is a bot it doesnt do anything
+  // if the author of the message is a bot dont do anything
   if (message.author.bot) return;
   // separate the messages in 3 arguments using spaces
   const args = message.content.split(" ");
   const command = args[0];
   const link = args[1];
   const quality = args[2] || null;
-  // if the command is not !video it doesnt do anything
+  // if the command is not !video  dont do anything
   if (command !== "!video") return;
-  // if it has the command but no link it doesnt do anything
+  // if it has the command but no link dont do anything
   if (!link) return;
   // if there is a third argument it formats the quality of the video else just selects the best quality available
   const format = quality
@@ -41,7 +41,7 @@ client.on("messageCreate", async (message) => {
   const cmd = `yt-dlp -f "${format}" --merge-output-format mp4 -o "${outputTemplate}" "${link}"`;
   // execute the command
   exec(cmd, async (err, stdout, stderr) => {
-    // if error it displays the error message and it doesnt do anything else
+    // if error display the error message and dont do anything else
     if (err) {
       console.log(stderr);
       return;
@@ -50,7 +50,7 @@ client.on("messageCreate", async (message) => {
     const files = fs
       .readdirSync(__dirname)
       .filter((f) => f.startsWith(`video_${id}`));
-    // if no file it doesnt do anything else
+    // if no file dont do anything else
     if (!files.length) return;
     // get the filepath
     const filePath = path.join(__dirname, files[0]);
@@ -59,7 +59,7 @@ client.on("messageCreate", async (message) => {
       const stats = fs.statSync(filePath);
       // get the size in MB of the video
       const sizeMB = stats.size / (1024 * 1024);
-      // if the size is larger than 10MB remove the file and it doesnt do anything else
+      // if the size is larger than 10MB remove the file and dont do anything else
       if (sizeMB > 10) {
         fs.unlinkSync(filePath);
         return;
@@ -71,7 +71,7 @@ client.on("messageCreate", async (message) => {
       // remove the file
       fs.unlinkSync(filePath);
     } catch (e) {
-      // if there is an error in the process it displays it to the console
+      // if error display the error message and dont do anything else
       console.error(e);
     }
   });
