@@ -12,7 +12,7 @@ const client = new Client({
     GatewayIntentBits.MessageContent,
   ],
 });
-// once bot has initialized it console logs the username
+// once bot has initialized it displays the username to the console
 client.once("clientReady", () => {
   console.log(`Bot online as ${client.user.tag}`);
 });
@@ -35,34 +35,46 @@ client.on("messageCreate", async (message) => {
     : "bv+ba/b";
   // it creates a random id
   const id = crypto.randomBytes(4).toString("hex");
-  // it selects a directory and a filename
+  // it selects a path and a filename
   const outputTemplate = path.join(__dirname, `video_${id}.%(ext)s`);
+  // it creates the command to download the video we pass the format, the desired output path and filename, and the link of the video
   const cmd = `yt-dlp -f "${format}" --merge-output-format mp4 -o "${outputTemplate}" "${link}"`;
+  // it executes the command
   exec(cmd, async (err, stdout, stderr) => {
+    // if error it displays the error message and it doesnt do anything else
     if (err) {
       console.log(stderr);
       return;
     }
+    // it checks if the file exists
     const files = fs
       .readdirSync(__dirname)
       .filter((f) => f.startsWith(`video_${id}`));
+    // if no file it doesnt do anything else
     if (!files.length) return;
+    // it gets the filepath
     const filePath = path.join(__dirname, files[0]);
     try {
+      // it gets the stats of the output video
       const stats = fs.statSync(filePath);
+      // it gets the size in MB of the video
       const sizeMB = stats.size / (1024 * 1024);
+      // if the size is larger than 10MB it removes the file and it doesnt do anything else
       if (sizeMB > 10) {
         fs.unlinkSync(filePath);
         return;
       }
+      // it sends the file to the discord server
       await message.channel.send({
         files: [filePath],
       });
+      // it removes the file
       fs.unlinkSync(filePath);
     } catch (e) {
+      // if there is an error in the process it displays it to the console
       console.error(e);
     }
   });
 });
-
+// iniatilize the discord bot
 client.login(process.env.DISCORD_TOKEN);
