@@ -16,11 +16,11 @@ const client = new Client({
 client.once("clientReady", () => {
   console.log(`Bot online as ${client.user.tag}`);
 });
-// it listens on messages
+// bot listens on messages
 client.on("messageCreate", async (message) => {
   // if the author of the message is a bot it doesnt do anything
   if (message.author.bot) return;
-  // it separates the messages in 3 arguments using spaces
+  // separate the messages in 3 arguments using spaces
   const args = message.content.split(" ");
   const command = args[0];
   const link = args[1];
@@ -33,42 +33,42 @@ client.on("messageCreate", async (message) => {
   const format = quality
     ? `bv*[height<=${quality}]+ba/b[height<=${quality}]`
     : "bv+ba/b";
-  // it creates a random id
+  // create a random id
   const id = crypto.randomBytes(4).toString("hex");
-  // it selects a path and a filename
+  // select a path and a filename
   const outputTemplate = path.join(__dirname, `video_${id}.%(ext)s`);
-  // it creates the command to download the video we pass the format, the desired output path and filename, and the link of the video
+  // create the command to download the video we pass the format, the desired output path and filename, and the link of the video
   const cmd = `yt-dlp -f "${format}" --merge-output-format mp4 -o "${outputTemplate}" "${link}"`;
-  // it executes the command
+  // execute the command
   exec(cmd, async (err, stdout, stderr) => {
     // if error it displays the error message and it doesnt do anything else
     if (err) {
       console.log(stderr);
       return;
     }
-    // it checks if the file exists
+    // check if the file exists
     const files = fs
       .readdirSync(__dirname)
       .filter((f) => f.startsWith(`video_${id}`));
     // if no file it doesnt do anything else
     if (!files.length) return;
-    // it gets the filepath
+    // get the filepath
     const filePath = path.join(__dirname, files[0]);
     try {
-      // it gets the stats of the output video
+      // get the stats of the outputed video
       const stats = fs.statSync(filePath);
-      // it gets the size in MB of the video
+      // get the size in MB of the video
       const sizeMB = stats.size / (1024 * 1024);
-      // if the size is larger than 10MB it removes the file and it doesnt do anything else
+      // if the size is larger than 10MB remove the file and it doesnt do anything else
       if (sizeMB > 10) {
         fs.unlinkSync(filePath);
         return;
       }
-      // it sends the file to the discord server
+      // send the file to the discord server
       await message.channel.send({
         files: [filePath],
       });
-      // it removes the file
+      // remove the file
       fs.unlinkSync(filePath);
     } catch (e) {
       // if there is an error in the process it displays it to the console
@@ -76,5 +76,5 @@ client.on("messageCreate", async (message) => {
     }
   });
 });
-// iniatilize the discord bot
+// iniatilize discord bot
 client.login(process.env.DISCORD_TOKEN);
