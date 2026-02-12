@@ -12,7 +12,7 @@ const client = new Client({
     GatewayIntentBits.MessageContent,
   ],
 });
-// once bot has initialized it displays the username to the console
+// once bot has initialized display the username to the console
 client.once("clientReady", () => {
   console.log(`Bot online as ${client.user.tag}`);
 });
@@ -20,24 +20,27 @@ client.once("clientReady", () => {
 client.on("messageCreate", async (message) => {
   // if the author of the message is a bot dont do anything
   if (message.author.bot) return;
-  // separate the messages in 3 arguments using spaces
+  // separate the message in arguments using spaces
   const args = message.content.split(" ");
   const command = args[0];
-  const link = args[1];
-  const quality = args[2] || null;
-  // if the command is not !video  dont do anything
-  if (command !== "!video") return;
-  // if it has the command but no link dont do anything
-  if (!link) return;
-  // if there is a third argument it formats the quality of the video else just selects the best quality available
+  const complement = args[1];
+
+  // if command is !video and there is a second argument call function
+  if (command == "!video" && complement) {
+    const quality = args[2] || null;
+    downloadVideo(complement, quality);
+  }
+});
+
+// function to download videos
+function downloadVideo(link, quality = null) {
+  // if quality not null use that to format video else just use best available format
   const format = quality
     ? `bv*[height<=${quality}]+ba/b[height<=${quality}]`
     : "bv+ba/b";
-  // create a random id
   const id = crypto.randomBytes(4).toString("hex");
-  // select a path and a filename
   const outputTemplate = path.join(__dirname, `video_${id}.%(ext)s`);
-  // create the command to download the video we pass the format, the desired output path and filename, and the link of the video
+  // create the command to download the video we pass: format, the desired output path and filename, and the link of the video
   const cmd = `yt-dlp -f "${format}" --merge-output-format mp4 -o "${outputTemplate}" "${link}"`;
   // execute the command
   exec(cmd, async (err, stdout, stderr) => {
@@ -75,6 +78,7 @@ client.on("messageCreate", async (message) => {
       console.error(e);
     }
   });
-});
+}
+
 // iniatilize discord bot
 client.login(process.env.DISCORD_TOKEN);
