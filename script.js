@@ -24,13 +24,16 @@ client.on("messageCreate", async (message) => {
   const command = args[0];
   const link = args[1];
   const quality = args[2] || "720";
-
+  const format = quality
+    ? `bv*[height<=${quality}]+ba/b[height<=${quality}]`
+    : "bv+ba/b";
   if (command !== "!video") return;
   if (!link) return;
 
   const id = crypto.randomBytes(4).toString("hex");
   const outputTemplate = path.join(__dirname, `video_${id}.%(ext)s`);
-  const cmd = `yt-dlp -f "bv*[height<=${quality}]+ba/b[height<=${quality}]" --merge-output-format mp4 -o "${outputTemplate}" "${link}"`;
+  // const cmd = `yt-dlp -f "bv*[height<=${quality}]+ba/b[height<=${quality}]" --merge-output-format mp4 -o "${outputTemplate}" "${link}"`;
+  const cmd = `yt-dlp -f "${format}" --merge-output-format mp4 -o "${outputTemplate}" "${link}"`;
   exec(cmd, async (err, stdout, stderr) => {
     if (err) {
       console.log(stderr);
