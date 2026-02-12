@@ -23,7 +23,8 @@ client.on("messageCreate", async (message) => {
   const args = message.content.split(" ");
   const command = args[0];
   const link = args[1];
-  const quality = args[2] || "720";
+  const quality = args[2] || null;
+
   const format = quality
     ? `bv*[height<=${quality}]+ba/b[height<=${quality}]`
     : "bv+ba/b";
