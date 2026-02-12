@@ -12,28 +12,31 @@ const client = new Client({
     GatewayIntentBits.MessageContent,
   ],
 });
-
+// once bot has initialized it console logs the username
 client.once("clientReady", () => {
   console.log(`Bot online as ${client.user.tag}`);
 });
-
+// it listens on messages
 client.on("messageCreate", async (message) => {
+  // if the author of the message is a bot it doesnt do anything
   if (message.author.bot) return;
-
+  // it separates the messages in 3 arguments using spaces
   const args = message.content.split(" ");
   const command = args[0];
   const link = args[1];
   const quality = args[2] || null;
-
+  // if the command is not !video it doesnt do anything
+  if (command !== "!video") return;
+  // if it has the command but no link it doesnt do anything
+  if (!link) return;
+  // if there is a third argument it formats the quality of the video else just selects the best quality available
   const format = quality
     ? `bv*[height<=${quality}]+ba/b[height<=${quality}]`
     : "bv+ba/b";
-  if (command !== "!video") return;
-  if (!link) return;
-
+  // it creates a random id
   const id = crypto.randomBytes(4).toString("hex");
+  // it selects a directory and a filename
   const outputTemplate = path.join(__dirname, `video_${id}.%(ext)s`);
-  // const cmd = `yt-dlp -f "bv*[height<=${quality}]+ba/b[height<=${quality}]" --merge-output-format mp4 -o "${outputTemplate}" "${link}"`;
   const cmd = `yt-dlp -f "${format}" --merge-output-format mp4 -o "${outputTemplate}" "${link}"`;
   exec(cmd, async (err, stdout, stderr) => {
     if (err) {
