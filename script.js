@@ -18,7 +18,6 @@ const client = new Client({
 // array of phrases
 const frases = [
   "ya quedó mi rey 🤴",
-  "tenia que haberle hecho caso a mi padre y haberme metido a granjero 🥀",
   "¿no hay nadie mas disponible? 😖",
   "solo deseo servir 🤖",
   "obedezco con gusto 🥰",
