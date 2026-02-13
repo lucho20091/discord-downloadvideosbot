@@ -11,6 +11,9 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
   ],
+  rest: {
+    timeout: 300000, // 5 minutes
+  },
 });
 // once bot has initialized display the username to the console
 client.once("clientReady", () => {
@@ -28,12 +31,12 @@ client.on("messageCreate", async (message) => {
   // if command is !video and there is a second argument call function
   if (command == "!video" && complement) {
     const quality = args[2] || null;
-    downloadVideo(complement, quality);
+    downloadVideo(complement, quality, message);
   }
 });
 
 // function to download videos
-function downloadVideo(link, quality) {
+function downloadVideo(link, quality, message) {
   // if quality not null use that to format video else just use best available format
   const format = quality
     ? `bv*[height<=${quality}]+ba/b[height<=${quality}]`
@@ -68,8 +71,10 @@ function downloadVideo(link, quality) {
         return;
       }
       // send the file to the discord server
-      await message.channel.send({
+      await message.reply({
         files: [filePath],
+        content: "toma tu chingadera 😭😭",
+        tts: true,
       });
       // remove the file
       fs.unlinkSync(filePath);
