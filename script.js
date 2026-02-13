@@ -15,6 +15,15 @@ const client = new Client({
     timeout: 300000, // 5 minutes
   },
 });
+// array of phrases
+const frases = [
+  "ya quedó mi rey 🤴",
+  "tenia que haberle hecho caso a mi padre y haberme metido a granjero 🥀",
+  "¿no hay nadie mas disponible? 😖",
+  "solo deseo servir 🤖",
+  "obedezco con gusto 🥰",
+];
+
 // once bot has initialized display the username to the console
 client.once("clientReady", () => {
   console.log(`Bot online as ${client.user.tag}`);
@@ -73,7 +82,7 @@ function downloadVideo(link, quality, message) {
       // send the file to the discord server
       await message.reply({
         files: [filePath],
-        content: "toma tu chingadera 😭😭",
+        content: frases[Math.floor(Math.random() * frases.length)],
         tts: true,
       });
       // remove the file
