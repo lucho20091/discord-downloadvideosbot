@@ -82,3 +82,6 @@ function downloadVideo(link, quality) {
 
 // iniatilize discord bot
 client.login(process.env.DISCORD_TOKEN);
+
+// command to check available quality for video
+// yt-dlp --list-formats <video_url>
