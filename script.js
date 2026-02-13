@@ -33,7 +33,7 @@ client.on("messageCreate", async (message) => {
 });
 
 // function to download videos
-function downloadVideo(link, quality = null) {
+function downloadVideo(link, quality) {
   // if quality not null use that to format video else just use best available format
   const format = quality
     ? `bv*[height<=${quality}]+ba/b[height<=${quality}]`
