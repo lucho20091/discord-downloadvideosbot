@@ -41,7 +41,8 @@ client.on("messageCreate", async (message) => {
       message.reply("link inválido 🤡");
       return;
     }
-    const quality = args[2] || null;
+    const quality =
+      args[2] && /^\d+$/.test(args[2]) && Number(args[2]) > 0 ? args[2] : null;
     const ok = await checkVideoDuration(complement, message);
     if (!ok) return;
 
