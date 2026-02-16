@@ -36,16 +36,18 @@ client.on("messageCreate", async (message) => {
   const complement = args[1];
   // if command is !video and there is a second argument call function
   if (command == "!video" && complement) {
-    // validate is an url
+    // validate command is an url
     if (!isValidUrl(complement)) {
       message.reply("link inválido 🤡");
       return;
     }
+    // validate quality is a number else null
     const quality =
       args[2] && /^\d+$/.test(args[2]) && Number(args[2]) > 0 ? args[2] : null;
+    // validate video duration max 5 minutes
     const ok = await checkVideoDuration(complement, message);
     if (!ok) return;
-
+    // start download process
     downloadVideo(complement, quality, message);
   }
 });
