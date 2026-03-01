@@ -99,7 +99,6 @@ function downloadVideo(link, quality, message) {
       await message.reply({
         files: [filePath],
         content: phrases[Math.floor(Math.random() * phrases.length)],
-        tts: true,
       });
       // remove file
       fs.unlinkSync(filePath);
